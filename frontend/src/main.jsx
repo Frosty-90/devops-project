@@ -69,7 +69,7 @@ function App() {
         </nav>
         <div className="side-bottom">
           <div className="upgrade"><strong>Never run out.</strong><p>Reorder alerts fire when stock hits its reorder level.</p></div>
-          <div className="profile"><div className="avatar">WM</div><div><b>Warehouse Manager</b><small>Main warehouse</small></div><span>⋮</span></div>
+          <div className="profile"><div className="avatar">SH</div><div><b>Shreesha</b><small>Warehouse Manager</small></div><span>⋮</span></div>
         </div>
       </aside>
 
