@@ -59,23 +59,27 @@ jobs:
           docker push ghcr.io/${{ env.OWNER }}/taskboard-backend:${{ github.sha }}
           docker push ghcr.io/${{ env.OWNER }}/taskboard-frontend:${{ github.sha }}
   deploy:
-    if: github.ref == 'refs/heads/main'
+    # Runs once `terraform apply` is done and the AWS_ROLE_ARN repo variable is set
+    if: github.ref == 'refs/heads/main' && vars.AWS_ROLE_ARN != ''
     needs: build-scan-push
     runs-on: ubuntu-latest
-    permissions: {contents: read, packages: read}
+    permissions: {contents: read, id-token: write}
     steps:
       - uses: actions/checkout@v4
       - run: echo "OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"  # image names must be lowercase
-      - uses: azure/setup-helm@v4
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ap-south-1
       - name: Configure kubectl
-        env: {KUBE_CONFIG_DATA: '${{ secrets.KUBE_CONFIG_DATA }}'}
-        run: |
-          mkdir -p ~/.kube
-          echo "$KUBE_CONFIG_DATA" | base64 -d > ~/.kube/config
+        run: aws eks update-kubeconfig --region ap-south-1 --name taskboard-eks
+      - uses: azure/setup-helm@v4
       - name: Deploy with Helm
         run: |
           helm upgrade --install taskboard ./helm/taskboard -n taskboard --create-namespace \
+            -f helm/taskboard/values-aws.yaml \
             --set backend.tag=${{ github.sha }} \
             --set frontend.tag=${{ github.sha }} \
             --set backend.image=ghcr.io/${{ env.OWNER }}/taskboard-backend \
-            --set frontend.image=ghcr.io/${{ env.OWNER }}/taskboard-frontend
+            --set frontend.image=ghcr.io/${{ env.OWNER }}/taskboard-frontend \
+            --wait --timeout 10m
