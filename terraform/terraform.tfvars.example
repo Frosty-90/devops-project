@@ -4,4 +4,4 @@ aws_region      = "ap-south-1"
 cluster_name    = "taskboard-eks"
 cluster_version = "1.36"
 environment     = "dev"
-github_repo     = "Frosty-90/devops-project"
+github_repo     = "Frosty-90@206500401/devops-project@1421742018" # immutable OIDC subject: owner@id/repo@id
