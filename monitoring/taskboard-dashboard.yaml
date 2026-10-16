@@ -8,8 +8,8 @@ metadata:
 data:
   taskboard.json: |
     {
-      "title": "TaskBoard API",
-      "uid": "taskboard-api",
+      "title": "StockPilot API",
+      "uid": "stockpilot-api",
       "time": {"from": "now-30m", "to": "now"},
       "refresh": "10s",
       "panels": [
