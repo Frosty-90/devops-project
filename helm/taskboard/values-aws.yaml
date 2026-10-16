@@ -1,0 +1,7 @@
+# EKS: reach the app through the Traefik load balancer's DNS name
+replicaCount: 2
+ingress:
+  enabled: true
+  host: ""
+hpa:
+  enabled: true

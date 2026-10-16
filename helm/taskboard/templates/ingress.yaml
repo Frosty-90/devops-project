@@ -3,11 +3,13 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata: {name: taskboard}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
-  - host: {{ .Values.ingress.host }}
+  - {{- with .Values.ingress.host }}
+    host: {{ . }}
+    {{- end }}
     http:
       paths:
-      - {path: /api, pathType: Prefix, backend: {service: {name: taskboard-backend, port: {number: 8080}}}}
+      - {path: /api, pathType: Prefix, backend: {service: {name: backend, port: {number: 8000}}}}
       - {path: /, pathType: Prefix, backend: {service: {name: taskboard-frontend, port: {number: 80}}}}
 {{- end }}

@@ -18,6 +18,7 @@ kind: Deployment
 metadata: {name: taskboard-postgres}
 spec:
   replicas: 1
+  strategy: {type: Recreate}  # EBS volume attaches to one node at a time
   selector: {matchLabels: {app: taskboard-postgres}}
   template:
     metadata: {labels: {app: taskboard-postgres}}
