@@ -1,0 +1,27 @@
+# Grafana sidecar auto-loads ConfigMaps labelled grafana_dashboard=1
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: taskboard-dashboard
+  namespace: monitoring
+  labels: {grafana_dashboard: "1"}
+data:
+  taskboard.json: |
+    {
+      "title": "TaskBoard API",
+      "uid": "taskboard-api",
+      "time": {"from": "now-30m", "to": "now"},
+      "refresh": "10s",
+      "panels": [
+        {"type": "timeseries", "title": "Requests per second by endpoint", "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+         "targets": [{"expr": "sum by (handler) (rate(http_requests_total{handler!=\"/metrics\"}[1m]))", "legendFormat": "{{handler}}"}]},
+        {"type": "timeseries", "title": "p95 latency (seconds)", "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+         "targets": [{"expr": "histogram_quantile(0.95, sum by (le, handler) (rate(http_request_duration_seconds_bucket{handler!=\"/metrics\"}[5m])))", "legendFormat": "{{handler}}"}]},
+        {"type": "timeseries", "title": "5xx errors per second", "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
+         "targets": [{"expr": "sum(rate(http_requests_total{status=\"5xx\"}[1m])) or vector(0)", "legendFormat": "5xx"}]},
+        {"type": "timeseries", "title": "Backend CPU (cores) and replicas", "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8},
+         "targets": [
+           {"expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"taskboard\", pod=~\".*-backend-.*\", container=\"backend\"}[1m]))", "legendFormat": "CPU cores"},
+           {"expr": "kube_deployment_status_replicas{namespace=\"taskboard\", deployment=~\".*-backend\"}", "legendFormat": "replicas"}]}
+      ]
+    }

@@ -7,7 +7,7 @@ variable "cluster_name" {
 }
 
 variable "cluster_version" {
-  default = "1.34"
+  default = "1.36"
 }
 
 variable "environment" {

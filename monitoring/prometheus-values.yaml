@@ -1,6 +1,13 @@
+# kube-prometheus-stack values
 grafana:
   enabled: true
+  sidecar:
+    dashboards: {enabled: true, label: grafana_dashboard, searchNamespace: ALL}
+alertmanager:
+  enabled: false # ponytail: not used in the demo; enable when alerts get routed somewhere
 prometheus:
   prometheusSpec:
+    # Scrape every ServiceMonitor in every namespace, not only ones labelled for this release
     serviceMonitorSelectorNilUsesHelmValues: false
     serviceMonitorNamespaceSelector: {}
+    retention: 2d
