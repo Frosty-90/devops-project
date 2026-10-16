@@ -1,0 +1,7 @@
+# Copy to terraform.tfvars and adjust. Never put AWS keys here:
+# credentials come from `aws configure` / environment variables.
+aws_region      = "ap-south-1"
+cluster_name    = "taskboard-eks"
+cluster_version = "1.34"
+environment     = "dev"
+github_repo     = "Frosty-90/devops-project"
