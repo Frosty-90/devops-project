@@ -1,4 +1,4 @@
-name: TaskBoard Python CI/CD
+name: StockPilot CI/CD
 on:
   push:
     branches: [main]
